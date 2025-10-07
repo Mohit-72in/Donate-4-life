@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Donate4Life</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main">
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-container">
+
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                <div class="profile-header">
+                    <div class="profile-info">
+                        <h2 class="profile-name" th:text="${user.name}">User Name</h2>
+                        <div class="profile-details">
+                            <span class="blood-group" th:text="${user.bloodGroup}">Blood Group</span>
+                            <span class="location" th:text="${user.address}">Address</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div sec:authorize="hasRole('DONOR')">
+                            <a th:href="@{/add-donation}" class="cta-button">Add a Donation</a>
+                        </div>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="cta-button secondary">Logout</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div sec:authorize="hasRole('DONOR')" class="credits-display">
+                    <div class="credits-number" th:text="${creditCount}">0</div>
+                    <div class="credits-label">Available Credits</div>
+                </div>
+
+                <div class="history-section">
+                    <h3>My History</h3>
+                    <div class="history-list">
+                        <p style="padding: 1rem; text-align: center; color: #666;">Your donation and request history will appear here.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

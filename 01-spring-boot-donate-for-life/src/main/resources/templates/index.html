@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donate4Life - Blood Donation Platform</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main">
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Your Gift Can Save a Life</h2>
+                <p class="hero-description">
+                    Join a community of heroes. Donate blood, earn credits, and create a network of support for when it's needed most. Simple, secure, and life-saving.
+                </p>
+                <div class="cta-buttons">
+                    <a th:href="@{/request}" class="cta-button">Request Blood</a>
+                    <a th:href="@{/register}" class="cta-button secondary">Become a Member</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h3 class="features-title">How It Works</h3>
+            <ul class="features-list">
+                <li class="feature-item">
+                    <p class="feature-icon">1</p>
+                    <span><strong>Register:</strong> Quickly sign up as a Donor or an Acceptor.</span>
+                </li>
+                <li class="feature-item">
+                    <p class="feature-icon">2</p>
+                    <span><strong>Donate & Earn:</strong> Record your blood donations and earn life-saving credits.</span>
+                </li>
+                <li class="feature-item">
+                    <p class="feature-icon">3</p>
+                    <span><strong>Request Help:</strong> Use your credits or make a request when you or a loved one is in need.</span>
+                </li>
+                <li class="feature-item">
+                    <p class="feature-icon">4</p>
+                    <span><strong>Save Lives:</strong> Be part of a community that supports each other.</span>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

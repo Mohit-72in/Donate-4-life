@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Donate4Life</title>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main">
+  <section class="form-section">
+    <div class="container">
+      <div class="form-container">
+        <h2 class="form-title">Join Donate4Life</h2>
+        <p class="form-description">Fill out the form below to get started as a Donor or an Acceptor.</p>
+
+        <form th:action="@{/register}" th:object="${user}" method="post">
+          <div class="form-group">
+            <label for="name" class="form-label">Full Name</label>
+            <input type="text" id="name" class="form-input" th:field="*{name}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="username" class="form-label">Email Address (This will be your username)</label>
+            <input type="email" id="username" class="form-input" th:field="*{username}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" class="form-input" th:field="*{password}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" id="phone" class="form-input" th:field="*{phone}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="age" class="form-label">Age</label>
+            <input type="number" id="age" class="form-input" min="18" max="65" th:field="*{age}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="gender" class="form-label">Gender</label>
+            <select id="gender" class="form-select" th:field="*{gender}" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="bloodGroup" class="form-label">Blood Group</label>
+            <select id="bloodGroup" class="form-select" th:field="*{bloodGroup}" required>
+              <option value="">Select Blood Group</option>
+              <option value="A+">A+</option>
+              <option value="A-">A−</option>
+              <option value="B+">B+</option>
+              <option value="B-">B−</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB−</option>
+              <option value="O+">O+</option>
+              <option value="O-">O−</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="address" class="form-label">Address (City/Area)</label>
+            <input type="text" id="address" class="form-input" placeholder="City/Area" th:field="*{address}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="userType" class="form-label">Register as</label>
+            <select id="userType" class="form-select" th:field="*{userType}" required>
+              <option th:value="'DONOR'" th:text="Donor"></option>
+              <option th:value="'ACCEPTOR'" th:text="Acceptor"></option>
+            </select>
+          </div>
+
+          <button type="submit" class="submit-button">Register</button>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

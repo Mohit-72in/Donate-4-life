@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<header class="header" th:fragment="header">
+  <div class="container">
+    <a th:href="@{/}" class="nav-brand">
+      <div class="logo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12,2A9,9 0 0,0 3,11C3,15.91 10,23 12,23C14,23 21,15.91 21,11A9,9 0 0,0 12,2Z" />
+        </svg>
+      </div>
+      <h1 class="brand-name">Donate4Life</h1>
+    </a>
+    <nav class="nav">
+      <ul class="nav-list">
+        <li><a th:href="@{/}" class="nav-link">Home</a></li>
+        <li sec:authorize="isAuthenticated()"><a th:href="@{/request}" class="nav-link">Request Blood</a></li>
+        <li sec:authorize="isAnonymous()"><a th:href="@{/register}" class="nav-link">Become a Member</a></li>
+        <li sec:authorize="isAnonymous()"><a th:href="@{/login}" class="nav-link">Login</a></li>
+        <li sec:authorize="isAuthenticated()"><a th:href="@{/profile}" class="nav-link">My Profile</a></li>
+
+        <li sec:authorize="hasRole('ADMIN')">
+          <a th:href="@{/admin/dashboard}" class="nav-link" style="color: #dc267f;">Admin Dashboard</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+</body>
+</html>

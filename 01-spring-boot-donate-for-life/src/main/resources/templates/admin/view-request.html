@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Request - Admin</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main">
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-container">
+                <a th:href="@{/admin/dashboard}" class="nav-link" style="margin-bottom: 2rem; display: inline-block;">&larr; Back to Dashboard</a>
+
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                <div class="history-section">
+                    <h3>Requestor Details</h3>
+                    <div class="history-list">
+                        <div class="history-item"><strong>Name:</strong> <span th:text="${request.acceptor.name}"></span></div>
+                        <div class="history-item"><strong>Blood Group Needed:</strong> <span class="blood-group" th:text="${request.requestedBloodGroup}"></span></div>
+                        <div class="history-item"><strong>Location:</strong> <span th:text="${request.hospitalName}"></span></div>
+                        <div class="history-item"><strong>Contact Phone:</strong> <span th:text="${request.acceptor.phone}"></span></div>
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <h3>Compatible Donors Found</h3>
+                    <div th:if="${#lists.isEmpty(compatibleDonors)}" class="alert alert-danger">
+                        No compatible donors found in the system for this blood group.
+                    </div>
+                    <div th:unless="${#lists.isEmpty(compatibleDonors)}" class="history-list">
+                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa; display: flex;">
+                            <div style="flex-basis: 20%;">Donor Name</div>
+                            <div style="flex-basis: 15%;">Blood Type</div>
+                            <div style="flex-basis: 20%;">Compatibility</div>
+                            <div style="flex-basis: 25%;">Contact Phone</div>
+                            <div style="flex-basis: 20%;">Action</div>
+                        </div>
+                        <div th:each="donor : ${compatibleDonors}" class="history-item" style="display: flex;">
+                            <div style="flex-basis: 20%;" th:text="${donor.name}">Donor Name</div>
+                            <div style="flex-basis: 15%;" class="blood-group" th:text="${donor.bloodGroup}">B+</div>
+                            <div style="flex-basis: 20%;" th:text="${donor.bloodGroup == request.requestedBloodGroup} ? 'Exact Match' : 'Compatible'">Compatibility</div>
+
+                            <div style="flex-basis: 25%; font-weight: bold;" th:text="${donor.phone}">Contact Phone</div>
+
+                            <div style="flex-basis: 20%;">
+                                <form th:action="@{/admin/request/{reqId}/notify/{donorId}(reqId=${request.requestId}, donorId=${donor.userId})}" method="post">
+                                    <button type="submit" class="cta-button" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Notify Donor</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

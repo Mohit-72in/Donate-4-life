@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Donate4Life</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="nav-brand">
+            <div class="logo-placeholder">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.69 2 6 4.69 6 8c0 4.5 6 11 6 11s6-6.5 6-11c0-3.31-2.69-6-6-6zm0 8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+            </div>
+            <h1 class="brand-name">Donate4Life</h1>
+        </div>
+        <nav class="nav">
+            <ul class="nav-list">
+                <li><a th:href="@{/}" class="nav-link">Home</a></li>
+                <li><a th:href="@{/request}" class="nav-link">Request Blood</a></li>
+                <li><a th:href="@{/register}" class="nav-link">Become a Member</a></li>
+                <li><a th:href="@{/profile}" class="nav-link">My Profile</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="main">
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Oops! Something Went Wrong.</h2>
+                <p class="hero-description">
+                    We've encountered an unexpected server error. We've been notified and are looking into it. Please try again later.
+                </p>
+                <div class="cta-buttons">
+                    <a th:href="@{/}" class="cta-button">Go to Homepage</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2025 Donate4Life — Saving Lives Together ❤️</p>
+    </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify Request - Admin</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main">
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-container">
+                <a th:href="@{/admin/dashboard}" class="nav-link" style="margin-bottom: 2rem; display: inline-block;">&larr; Back to Dashboard</a>
+                <h2 class="form-title">Verify Blood Request</h2>
+
+                <div class="history-section">
+                    <h3>Requestor Details</h3>
+                </div>
+
+                <div class="history-section">
+                    <h3>Verification Document</h3>
+                    <a th:href="@{'/uploads/' + ${request.documentUrl}}" target="_blank">View Uploaded Document</a>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <form th:action="@{/admin/request/approve/{id}(id=${request.requestId})}" method="post">
+                        <button type="submit" class="submit-button">Approve</button>
+                    </form>
+                    <form th:action="@{/admin/request/reject/{id}(id=${request.requestId})}" method="post">
+                        <button type="submit" class="cta-button secondary" style="background-color: #dc3545; border-color: #dc3545;">Reject</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

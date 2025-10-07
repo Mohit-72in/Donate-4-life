@@ -1,0 +1,3 @@
+ALTER TABLE requests
+ADD COLUMN verification_status VARCHAR(20) NOT NULL DEFAULT 'UNVERIFIED',
+ADD COLUMN document_url VARCHAR(255);

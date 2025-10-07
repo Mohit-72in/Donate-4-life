@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Donate4Life</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main">
+    <section class="profile-section">
+        <div class="container">
+            <div class="profile-container">
+                <h2 class="form-title">Admin Dashboard</h2>
+                <p class="form-description">Manage new and active blood requests.</p>
+
+                <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+                <div class="history-section">
+                    <h3>Donations Pending Verification</h3>
+                    <div th:if="${#lists.isEmpty(unverifiedDonations)}" class="alert alert-success">
+                        No new donations are pending verification.
+                    </div>
+                    <div th:unless="${#lists.isEmpty(unverifiedDonations)}" class="history-list">
+                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
+                            <div>Donation Date</div>
+                            <div>Donor Name</div>
+                            <div>Hospital</div>
+                            <div>Action</div>
+                        </div>
+                        <div th:each="don : ${unverifiedDonations}" class="history-item">
+                            <div th:text="${#temporals.format(don.donationDate, 'dd-MMM-yyyy')}"></div>
+                            <div th:text="${don.donor.name}"></div>
+                            <div th:text="${don.hospitalName}"></div>
+                            <a th:href="@{/admin/donation/verify/{id}(id=${don.donationId})}" class="cta-button" style="padding: 0.5rem 1rem;">Verify</a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="margin: 3rem 0; border: 1px solid #f0f0f0;">
+
+                <div class="history-section">
+                    <h3>Requests Pending Verification</h3>
+                    <div th:if="${#lists.isEmpty(unverifiedRequests)}" class="alert alert-success">
+                        No new requests are pending verification.
+                    </div>
+                    <div th:unless="${#lists.isEmpty(unverifiedRequests)}" class="history-list">
+                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
+                            <div class="history-date">Request Date</div>
+                            <div class="history-details">Acceptor Name</div>
+                            <div class="blood-group">Blood Group</div>
+                            <div>Action</div>
+                        </div>
+                        <div th:each="req : ${unverifiedRequests}" class="history-item">
+                            <div class="history-date" th:text="${#temporals.format(req.requestDate, 'dd-MMM-yyyy')}"></div>
+                            <div class="history-details" th:text="${req.acceptor.name}"></div>
+                            <div class="blood-group" th:text="${req.requestedBloodGroup}"></div>
+                            <a th:href="@{/admin/request/verify/{id}(id=${req.requestId})}" class="cta-button" style="padding: 0.5rem 1rem;">Verify</a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr style="margin: 3rem 0; border: 1px solid #f0f0f0;">
+
+                <div class="history-section">
+                    <h3>Active Blood Requests</h3>
+                    <div th:if="${#lists.isEmpty(activeRequests)}" class="alert alert-success">
+                        There are currently no active requests needing a donor.
+                    </div>
+                    <div th:unless="${#lists.isEmpty(activeRequests)}" class="history-list">
+                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
+                            <div class="history-date">Request Date</div>
+                            <div class="history-details">Acceptor Name</div>
+                            <div class="blood-group">Blood Group</div>
+                            <div>Action</div>
+                        </div>
+                        <div th:each="req : ${activeRequests}" class="history-item">
+                            <div class="history-date" th:text="${#temporals.format(req.requestDate, 'dd-MMM-yyyy')}"></div>
+                            <div class="history-details" th:text="${req.acceptor.name}"></div>
+                            <div class="blood-group" th:text="${req.requestedBloodGroup}"></div>
+                            <a th:href="@{/admin/request/{id}(id=${req.requestId})}" class="cta-button" style="padding: 0.5rem 1rem;">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

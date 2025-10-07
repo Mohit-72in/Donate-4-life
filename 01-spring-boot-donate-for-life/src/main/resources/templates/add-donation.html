@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Donation - Donate4Life</title>
+
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="main">
+    <section class="form-section">
+        <div class="container">
+            <div class="form-container">
+                <h2 class="form-title">Record a Donation</h2>
+
+                <div th:if="${!isEligible}">
+                    <div class="alert alert-danger">
+                        You are not yet eligible to record a new donation.
+                    </div>
+                    <p class="form-description">
+                        To ensure donor safety, a 90-day waiting period is required between donations.
+                        You will be eligible to donate again on:
+                        <strong th:text="${#temporals.format(nextEligibleDate, 'dd MMMM yyyy')}"></strong>.
+                    </p>
+                </div>
+
+                <div th:if="${isEligible}">
+                    <p class="form-description">Thank you for your life-saving gift. Please enter the details of your recent donation.</p>
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                    <form th:action="@{/add-donation}" th:object="${donation}" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="donationDate" class="form-label">Donation Date</label>
+                            <input type="date" id="donationDate" th:field="*{donationDate}" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="hospitalName" class="form-label">Location (Hospital/Clinic)</label>
+                            <input type="text" id="hospitalName" th:field="*{hospitalName}" class="form-input" placeholder="e.g., City Hospital, Kochi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="document" class="form-label">Proof of Donation</label>
+                            <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Please upload a photo of your donation certificate or proof.</p>
+                            <input type="file" id="document" name="document" class="form-input" required>
+                        </div>
+                        <button type="submit" class="submit-button">Submit Donation</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>
