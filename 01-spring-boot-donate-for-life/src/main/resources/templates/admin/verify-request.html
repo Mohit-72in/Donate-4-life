@@ -2,8 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Verify Request - Admin</title>
+    <title>Verify Blood Request - Admin</title>
     <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -18,19 +19,25 @@
 
                 <div class="history-section">
                     <h3>Requestor Details</h3>
+                    <div class="history-list">
+                        <div class="history-item"><strong>Name:</strong> <span th:text="${request.acceptor.name}"></span></div>
+                        <div class="history-item"><strong>Contact Phone:</strong> <span th:text="${request.acceptor.phone}"></span></div>
+                        <div class="history-item"><strong>Blood Group Needed:</strong> <span class="blood-group" th:text="${request.requestedBloodGroup}"></span></div>
+                        <div class="history-item"><strong>Location (Hospital):</strong> <span th:text="${request.hospitalName}"></span></div>
+                    </div>
                 </div>
 
                 <div class="history-section">
                     <h3>Verification Document</h3>
-                    <a th:href="@{'/uploads/' + ${request.documentUrl}}" target="_blank">View Uploaded Document</a>
+                    <a th:href="@{'/uploads/' + ${request.documentUrl}}" target="_blank" class="cta-button">View Uploaded Document</a>
                 </div>
 
                 <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                     <form th:action="@{/admin/request/approve/{id}(id=${request.requestId})}" method="post">
-                        <button type="submit" class="submit-button">Approve</button>
+                        <button type="submit" class="submit-button">Approve Request</button>
                     </form>
                     <form th:action="@{/admin/request/reject/{id}(id=${request.requestId})}" method="post">
-                        <button type="submit" class="cta-button secondary" style="background-color: #dc3545; border-color: #dc3545;">Reject</button>
+                        <button type="submit" class="cta-button secondary" style="background-color: #dc3545; border-color: #dc3545; color: white;">Reject Request</button>
                     </form>
                 </div>
             </div>
