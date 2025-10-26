@@ -41,7 +41,7 @@ public class EmailService {
         sendEmail(donorEmail, subject, body);
     }
 
-    // ⭐ NEW: This was the missing method
+    //  NEW: This was the missing method
     public void sendDonationRejectionEmail(String donorEmail, String donorName, LocalDate donationDate, String reason) {
         String subject = "Update on your recent donation submission - Donate4Life";
         String body = String.format(

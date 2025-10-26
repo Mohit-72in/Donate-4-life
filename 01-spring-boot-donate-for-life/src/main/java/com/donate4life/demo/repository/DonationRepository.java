@@ -17,7 +17,7 @@ public interface DonationRepository extends JpaRepository<Donation, Integer> {
     @Query("SELECT d FROM Donation d JOIN FETCH d.donor WHERE d.verificationStatus = :status ORDER BY d.donationDate ASC")
     List<Donation> findByVerificationStatusWithDonor(Donation.VerificationStatus status);
 
-    // ⭐ NEW: This method solves the error on the verification details page
+    //  NEW: This method solves the error on the verification details page
     @Query("SELECT d FROM Donation d JOIN FETCH d.donor WHERE d.donationId = :donationId")
     Optional<Donation> findByIdWithDonor(Integer donationId);
 
