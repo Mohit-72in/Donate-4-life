@@ -67,6 +67,13 @@ public class User implements UserDetails {
     @Column(name = "enabled")
     private boolean enabled = false;
 
+    // ⭐ NEW: Fields for Google Maps Geolocation
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     // --- Spring Security Methods ---
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

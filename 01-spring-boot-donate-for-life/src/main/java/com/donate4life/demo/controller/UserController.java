@@ -7,6 +7,7 @@ import com.donate4life.demo.service.CreditService;
 import com.donate4life.demo.service.DonationService;
 import com.donate4life.demo.service.RequestService;
 import com.donate4life.demo.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,9 @@ public class UserController {
     private final DonationService donationService; // 1. Declare the new services
     private final RequestService requestService;
 
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
+
     // 2. Inject the services in the constructor
     public UserController(UserService userService, CreditService creditService, DonationService donationService, RequestService requestService) {
         this.userService = userService;
@@ -34,9 +38,11 @@ public class UserController {
         this.requestService = requestService;
     }
 
+    // 3. Update showRegistrationForm to pass the key
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey); // Add the key to the model
         return "donor";
     }
 

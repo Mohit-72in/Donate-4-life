@@ -50,6 +50,13 @@ public class Request {
     @Column(name = "document_url")
     private String documentUrl; // To store the path to the uploaded document
 
+    // ⭐ NEW: Fields for Google Maps Geolocation
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     public Request(User acceptor, String requestedBloodGroup, String hospitalName) {
         this.acceptor = acceptor;
         this.requestedBloodGroup = requestedBloodGroup;

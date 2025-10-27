@@ -40,6 +40,13 @@ public class Donation {
     @Column(name = "document_url")
     private String documentUrl;
 
+    // ⭐ NEW: Fields for Google Maps Geolocation
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     public Donation(User donor, LocalDate donationDate, String hospitalName) {
         this.donor = donor;
         this.donationDate = donationDate;
