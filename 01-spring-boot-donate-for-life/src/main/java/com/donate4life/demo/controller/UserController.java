@@ -1,7 +1,11 @@
 package com.donate4life.demo.controller;
 
+import com.donate4life.demo.entity.Donation;
+import com.donate4life.demo.entity.Request;
 import com.donate4life.demo.entity.User;
 import com.donate4life.demo.service.CreditService;
+import com.donate4life.demo.service.DonationService;
+import com.donate4life.demo.service.RequestService;
 import com.donate4life.demo.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -12,15 +16,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 
     private final UserService userService;
     private final CreditService creditService;
+    private final DonationService donationService; // 1. Declare the new services
+    private final RequestService requestService;
 
-    public UserController(UserService userService, CreditService creditService) {
+    // 2. Inject the services in the constructor
+    public UserController(UserService userService, CreditService creditService, DonationService donationService, RequestService requestService) {
         this.userService = userService;
         this.creditService = creditService;
+        this.donationService = donationService;
+        this.requestService = requestService;
     }
 
     @GetMapping("/register")
@@ -33,7 +44,7 @@ public class UserController {
     public String processRegistration(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
         User savedUser = userService.registerUser(user);
         redirectAttributes.addAttribute("userId", savedUser.getUserId());
-        return "redirect:/verify-otp"; // This line sends the user to the OTP page
+        return "redirect:/verify-otp";
     }
 
     @GetMapping("/verify-otp")
@@ -61,10 +72,22 @@ public class UserController {
     @GetMapping("/profile")
     public String showProfilePage(@AuthenticationPrincipal User currentUser, Model model) {
         model.addAttribute("user", currentUser);
+
         if (currentUser.getUserType() == User.UserType.DONOR) {
+            // Get credit count
             long creditCount = creditService.getValidCreditCountByDonor(currentUser.getUserId());
             model.addAttribute("creditCount", creditCount);
+
+            // Get donation history
+            List<Donation> donationHistory = donationService.getDonationsByDonor(currentUser.getUserId());
+            model.addAttribute("donationHistory", donationHistory);
+
+        } else if (currentUser.getUserType() == User.UserType.ACCEPTOR) {
+            // Get request history
+            List<Request> requestHistory = requestService.getRequestsByAcceptor(currentUser.getUserId());
+            model.addAttribute("requestHistory", requestHistory);
         }
+
         return "profile";
     }
 }

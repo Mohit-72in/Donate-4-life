@@ -34,7 +34,6 @@ public class RequestService {
     }
 
     public List<Request> getPendingRequests() {
-        // This finds requests that are APPROVED and still PENDING fulfillment
         return requestRepository.findByVerificationStatusAndStatusWithAcceptor(
                 Request.VerificationStatus.APPROVED,
                 Request.Status.PENDING
@@ -42,17 +41,22 @@ public class RequestService {
     }
 
     public List<Request> getUnverifiedRequests() {
-        // This now correctly calls the method that fetches the acceptor details
         return requestRepository.findByVerificationStatusWithAcceptor(Request.VerificationStatus.UNVERIFIED);
     }
 
     public void verifyRequest(Integer requestId, boolean isApproved) {
-        Request request = getRequestById(requestId);
+        Request request = getRequestById(requestId); // Use getRequestById to ensure donor is fetched
         if (isApproved) {
             request.setVerificationStatus(Request.VerificationStatus.APPROVED);
         } else {
             request.setVerificationStatus(Request.VerificationStatus.REJECTED);
         }
         requestRepository.save(request);
+    }
+
+    // ⭐ THIS WAS THE MISSING METHOD
+    // This method is needed for the profile history page
+    public List<Request> getRequestsByAcceptor(Integer acceptorId) {
+        return requestRepository.findByAcceptor_UserId(acceptorId);
     }
 }

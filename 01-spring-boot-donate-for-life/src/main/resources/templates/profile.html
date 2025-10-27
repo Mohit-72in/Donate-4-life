@@ -43,15 +43,52 @@
 
                 <div class="history-section">
                     <h3>My History</h3>
-                    <div class="history-list">
-                        <p style="padding: 1rem; text-align: center; color: #666;">Your donation and request history will appear here.</p>
-                    </div>
-                </div>
 
-            </div>
-        </div>
-    </section>
-</main>
+                    <div sec:authorize="hasRole('DONOR')">
+                        <div th:if="${#lists.isEmpty(donationHistory)}" class="history-list">
+                            <p style="padding: 1rem; text-align: center; color: #666;">You have no recorded donations.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(donationHistory)}" class="history-list">
+                            <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
+                                <div>Donation Date</div>
+                                <div>Location</div>
+                                <div>Status</div>
+                            </div>
+                            <div th:each="donation : ${donationHistory}" class="history-item">
+                                <div th:text="${#temporals.format(donation.donationDate, 'dd-MMM-yyyy')}"></div>
+                                <div th:text="${donation.hospitalName}"></div>
+                                <div th:text="${donation.verificationStatus}"
+                                     th:classappend="${donation.verificationStatus.name() == 'APPROVED'} ? 'status-approved' :
+                                                    (${donation.verificationStatus.name() == 'REJECTED'} ? 'status-rejected' : 'status-pending')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div sec:authorize="hasRole('ACCEPTOR')">
+                        <div th:if="${#lists.isEmpty(requestHistory)}" class="history-list">
+                            <p style="padding: 1rem; text-align: center; color: #666;">You have no recorded requests.</p>
+                        </div>
+                        <div th:unless="${#lists.isEmpty(requestHistory)}" class="history-list">
+                            <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
+                                <div>Request Date</div>
+                                <div>Blood Group</div>
+                                <div>Location</div>
+                                <div>Status</div>
+                            </div>
+                            <div th:each="request : ${requestHistory}" class="history-item">
+                                <div th:text="${#temporals.format(request.requestDate, 'dd-MMM-yyyy')}"></div>
+                                <div class="blood-group" th:text="${request.requestedBloodGroup}"></div>
+                                <div th:text="${request.hospitalName}"></div>
+                                <div th:text="${request.verificationStatus}"
+                                     th:classappend="${request.verificationStatus.name() == 'APPROVED'} ? 'status-approved' :
+                                                    (${request.verificationStatus.name() == 'REJECTED'} ? 'status-rejected' : 'status-pending')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> </div> </div> </section> </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
