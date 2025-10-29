@@ -4,6 +4,7 @@ import com.donate4life.demo.entity.Donation;
 import com.donate4life.demo.entity.User;
 import com.donate4life.demo.service.DonationService;
 import com.donate4life.demo.service.FileStorageService;
+import org.springframework.beans.factory.annotation.Value; // ⭐ IMPORT
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,10 @@ public class DonationPageController {
     private final DonationService donationService;
     private final FileStorageService fileStorageService;
 
+    // ⭐ ADD THIS
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
+
     public DonationPageController(DonationService donationService, FileStorageService fileStorageService) {
         this.donationService = donationService;
         this.fileStorageService = fileStorageService;
@@ -31,6 +36,10 @@ public class DonationPageController {
 
     @GetMapping("/add-donation")
     public String showDonationForm(Model model, @AuthenticationPrincipal User currentUser) {
+
+        // ⭐ FIX: Add the API key at the very beginning
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
+
         Optional<Donation> latestDonationOpt = donationService.findLatestApprovedDonation(currentUser.getUserId());
 
         if (latestDonationOpt.isPresent()) {
@@ -40,6 +49,7 @@ public class DonationPageController {
             if (daysSinceLastDonation < 90) {
                 model.addAttribute("isEligible", false);
                 model.addAttribute("nextEligibleDate", latestDonation.getDonationDate().plusDays(90));
+                // It's now safe to return, the key is already added
                 return "add-donation";
             }
         }
@@ -54,6 +64,8 @@ public class DonationPageController {
                                   @RequestParam("document") MultipartFile document,
                                   @AuthenticationPrincipal User currentUser,
                                   RedirectAttributes redirectAttributes) {
+
+        // ... (No changes to the POST method) ...
 
         Optional<Donation> latestDonationOpt = donationService.findLatestApprovedDonation(currentUser.getUserId());
         if (latestDonationOpt.isPresent()) {
@@ -70,7 +82,7 @@ public class DonationPageController {
         }
 
         String documentUrl = fileStorageService.save(document);
-        donationService.addDonation(currentUser.getUserId(), donation.getDonationDate(), donation.getHospitalName(), documentUrl);
+        donationService.addDonation(currentUser.getUserId(), donation.getDonationDate(), donation.getHospitalName(), documentUrl, donation.getLatitude(), donation.getLongitude());
 
         redirectAttributes.addFlashAttribute("success", "Thank you! Your donation has been submitted for verification.");
         return "redirect:/profile";

@@ -25,63 +25,54 @@
                 <form th:action="@{/register}" th:object="${user}" method="post">
 
                     <div class="form-group">
-                        <label for="name" class="form-label">Full Name</label>
-                        <input type="text" id="name" class="form-input" th:field="*{name}" required>
+                        <label for="name" class="form-label">Full Name</label> <input type="text" id="name" class="form-input" th:field="*{name}" required>
                     </div>
                     <div class="form-group">
-                        <label for="username" class="form-label">Email Address (This will be your username)</label>
-                        <input type="email" id="username" class="form-input" th:field="*{username}" required>
+                        <label for="username" class="form-label">Email Address (This will be your username)</label> <input type="email" id="username" class="form-input" th:field="*{username}" required>
                     </div>
                     <div class="form-group">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" id="password" class="form-input" th:field="*{password}" required>
+                        <label for="password" class="form-label">Password</label> <input type="password" id="password" class="form-input" th:field="*{password}" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone" class="form-label">Phone Number</label>
-                        <input type="tel" id="phone" class="form-input" th:field="*{phone}" required>
+                        <label for="phone" class="form-label">Phone Number</label> <input type="tel" id="phone" class="form-input" th:field="*{phone}" required>
                     </div>
                     <div class="form-group">
-                        <label for="age" class="form-label">Age</label>
-                        <input type="number" id="age" class="form-input" min="18" max="65" th:field="*{age}" required>
+                        <label for="age" class="form-label">Age</label> <input type="number" id="age" class="form-input" min="18" max="65" th:field="*{age}" required>
                     </div>
                     <div class="form-group">
-                        <label for="gender" class="form-label">Gender</label>
-                        <select id="gender" class="form-select" th:field="*{gender}" required>
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
+                        <label for="gender" class="form-label">Gender</label> <select id="gender" class="form-select" th:field="*{gender}" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
                     </div>
                     <div class="form-group">
-                        <label for="bloodGroup" class="form-label">Blood Group</label>
-                        <select id="bloodGroup" class="form-select" th:field="*{bloodGroup}" required>
-                            <option value="">Select Blood Group</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A−</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B−</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB−</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O−</option>
-                        </select>
+                        <label for="bloodGroup" class="form-label">Blood Group</label> <select id="bloodGroup" class="form-select" th:field="*{bloodGroup}" required>
+                        <option value="">Select Blood Group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A−</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B−</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB−</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O−</option>
+                    </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="address" class="form-label">Address (City/Area)</label>
-                        <input type="text" id="address" class="form-input" placeholder="Start typing your address..." th:field="*{address}" required>
+                        <label for="address" class="form-label">Address (City/Area)</label> <input type="text" id="address" class="form-input" placeholder="Start typing your address..." th:field="*{address}" required>
                     </div>
 
                     <input type="hidden" id="latitude" th:field="*{latitude}" />
                     <input type="hidden" id="longitude" th:field="*{longitude}" />
 
                     <div class="form-group">
-                        <label for="userType" class="form-label">Register as</label>
-                        <select id="userType" class="form-select" th:field="*{userType}" required>
-                            <option th:value="'DONOR'" th:text="Donor"></option>
-                            <option th:value="'ACCEPTOR'" th:text="Acceptor"></option>
-                        </select>
+                        <label for="userType" class="form-label">Register as</label> <select id="userType" class="form-select" th:field="*{userType}" required>
+                        <option th:value="'DONOR'" th:text="Donor"></option>
+                        <option th:value="'ACCEPTOR'" th:text="Acceptor"></option>
+                    </select>
                     </div>
 
                     <button type="submit" class="submit-button">Register</button>
@@ -93,43 +84,41 @@
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&libraries=places&callback=initAutocomplete'}"
-        async defer></script>
-
 <script>
     function initAutocomplete() {
-        const addressInput = document.getElementById('address');
+        console.log("SUCCESS: initAutocomplete() called on /register page.");
 
-        // This is the new safeguard
+        const addressInput = document.getElementById('address');
         if (!addressInput) {
-            console.error("Input element with id 'address' not found.");
+            console.error("FAILURE: Input element with id 'address' not found.");
             return;
         }
 
         const autocomplete = new google.maps.places.Autocomplete(addressInput, {
             componentRestrictions: { country: 'in' },
-            fields: ['geometry', 'formatted_address'] // This is the improved 'fields' array
+            fields: ['geometry', 'formatted_address']
         });
 
         autocomplete.addListener('place_changed', function () {
             const place = autocomplete.getPlace();
-
             if (!place.geometry || !place.geometry.location) {
-                console.log("No details available for input: '" + (place.name || '') + "'");
+                console.log("No details available for input.");
                 return;
             }
 
+            console.log("SUCCESS: Place selected on /register page:", place.formatted_address);
+
             const lat = place.geometry.location.lat();
             const lng = place.geometry.location.lng();
-
             document.getElementById('latitude').value = lat;
             document.getElementById('longitude').value = lng;
             document.getElementById('address').value = place.formatted_address;
         });
     }
-
-    // We do NOT add the window.addEventListener('load', ...) because the 'callback' in the script tag already handles it.
 </script>
+
+<script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&libraries=places&callback=initAutocomplete'}"
+        async defer></script>
 
 </body>
 </html>

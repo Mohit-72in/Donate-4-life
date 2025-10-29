@@ -22,6 +22,9 @@
 
                 <form th:action="@{/request}" th:object="${request}" method="post" enctype="multipart/form-data">
 
+                    <input type="hidden" id="latitude" th:field="*{latitude}" />
+                    <input type="hidden" id="longitude" th:field="*{longitude}" />
+
                     <div class="form-group">
                         <label for="blood-group" class="form-label">Blood Group</label>
                         <select id="blood-group" th:field="*{requestedBloodGroup}" class="form-select" required>
@@ -39,7 +42,7 @@
 
                     <div class="form-group">
                         <label for="hospitalName" class="form-label">Location (Hospital/Clinic)</label>
-                        <input type="text" id="hospitalName" th:field="*{hospitalName}" class="form-input" placeholder="City, Hospital/Clinic name" required>
+                        <input type="text" id="hospitalName" th:field="*{hospitalName}" class="form-input" placeholder="Start typing your address..." required>
                     </div>
 
                     <div class="form-group">
@@ -57,6 +60,43 @@
         </div>
     </section>
 </main>
+
+<script>
+    function initAutocomplete() {
+        console.log("SUCCESS: initAutocomplete() called on /request page.");
+
+        const addressInput = document.getElementById('hospitalName');
+        if (!addressInput) {
+            console.error("FAILURE: Input element with id 'hospitalName' not found.");
+            return;
+        }
+
+        const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+            componentRestrictions: { country: 'in' },
+            fields: ['geometry', 'formatted_address']
+        });
+
+        autocomplete.addListener('place_changed', function () {
+            const place = autocomplete.getPlace();
+            if (!place.geometry || !place.geometry.location) {
+                console.log("No details available for input.");
+                return;
+            }
+
+            console.log("SUCCESS: Place selected on /request page:", place.formatted_address);
+
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lng;
+            document.getElementById('hospitalName').value = place.formatted_address;
+        });
+    }
+</script>
+
+<script th:src="@{'https://maps.googleapis.com/maps/api/js?key=' + ${googleMapsApiKey} + '&libraries=places&callback=initAutocomplete'}"
+        async defer></script>
+
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 

@@ -28,12 +28,18 @@ public class DonationService {
     }
 
     @Transactional
-    public Donation addDonation(Integer donorId, LocalDate donationDate, String hospitalName, String documentUrl) {
+    public Donation addDonation(Integer donorId, LocalDate donationDate, String hospitalName, String documentUrl,
+                                Double latitude, Double longitude) { // ⭐ ADD PARAMETERS
         User donor = userRepository.findById(donorId)
                 .orElseThrow(() -> new RuntimeException("Donor not found with ID: " + donorId));
 
         Donation donation = new Donation(donor, donationDate, hospitalName);
         donation.setDocumentUrl(documentUrl);
+
+        // ⭐ ADD THESE TWO LINES
+        donation.setLatitude(latitude);
+        donation.setLongitude(longitude);
+
         return donationRepository.save(donation);
     }
 

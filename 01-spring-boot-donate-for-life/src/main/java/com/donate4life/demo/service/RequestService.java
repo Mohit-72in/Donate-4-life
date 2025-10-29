@@ -19,12 +19,18 @@ public class RequestService {
         this.userRepository = userRepository;
     }
 
-    public Request createRequest(Integer acceptorId, String bloodGroup, String hospitalName, String documentUrl) {
+    public Request createRequest(Integer acceptorId, String bloodGroup, String hospitalName, String documentUrl,
+                                 Double latitude, Double longitude) { // ⭐ ADD PARAMETERS
         User acceptor = userRepository.findById(acceptorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Acceptor not found with ID: " + acceptorId));
 
         Request request = new Request(acceptor, bloodGroup, hospitalName);
         request.setDocumentUrl(documentUrl);
+
+        // ⭐ ADD THESE TWO LINES
+        request.setLatitude(latitude);
+        request.setLongitude(longitude);
+
         return requestRepository.save(request);
     }
 

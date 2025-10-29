@@ -2,25 +2,29 @@ package com.donate4life.demo.controller;
 
 import com.donate4life.demo.entity.Request;
 import com.donate4life.demo.entity.User;
-import com.donate4life.demo.service.FileStorageService; // 1. Import FileStorageService
+import com.donate4life.demo.service.FileStorageService;
 import com.donate4life.demo.service.RequestService;
+import org.springframework.beans.factory.annotation.Value; // ⭐ IMPORT
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam; // 2. Import RequestParam
-import org.springframework.web.multipart.MultipartFile; // 3. Import MultipartFile
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class RequestController {
 
     private final RequestService requestService;
-    private final FileStorageService fileStorageService; // 4. Declare the new service
+    private final FileStorageService fileStorageService;
 
-    // 5. Inject the service in the constructor
+    // ⭐ ADD THIS
+    @Value("${google.maps.api.key}")
+    private String googleMapsApiKey;
+
     public RequestController(RequestService requestService, FileStorageService fileStorageService) {
         this.requestService = requestService;
         this.fileStorageService = fileStorageService;
@@ -29,13 +33,13 @@ public class RequestController {
     @GetMapping("/request")
     public String showRequestForm(Model model) {
         model.addAttribute("request", new Request());
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey); // ⭐ ADD THIS LINE
         return "request";
     }
 
-    // 6. Update the method to handle the file upload
     @PostMapping("/request")
     public String processRequest(@ModelAttribute Request request,
-                                 @RequestParam("document") MultipartFile document, // Get the uploaded file
+                                 @RequestParam("document") MultipartFile document,
                                  @AuthenticationPrincipal User currentUser,
                                  RedirectAttributes redirectAttributes) {
 
@@ -49,15 +53,15 @@ public class RequestController {
             return "redirect:/request";
         }
 
-        // Save the uploaded file and get its unique name
         String documentUrl = fileStorageService.save(document);
 
-        // Call the updated service method, now with the document name
         requestService.createRequest(
                 currentUser.getUserId(),
                 request.getRequestedBloodGroup(),
                 request.getHospitalName(),
-                documentUrl
+                documentUrl,
+                request.getLatitude(),
+                request.getLongitude()
         );
 
         redirectAttributes.addFlashAttribute("success", "Your request has been submitted for verification!");
