@@ -82,7 +82,7 @@
                                 <div th:text="${request.hospitalName}"></div>
 
                                 <div style="min-width: 200px;">
-                                    <div th:if="${request.verificationStatus.name() == 'APPROVED' AND request.status.name() == 'PENDING'}">
+                                    <div th:if="${request.verificationStatus.name() == 'APPROVED' && request.status.name() == 'PENDING'}">
                                         <form th:action="@{/request/fulfill/{id}(id=${request.requestId})}" method="post">
 
                                             <div style="font-size: 0.9rem; margin-bottom: 5px;">
