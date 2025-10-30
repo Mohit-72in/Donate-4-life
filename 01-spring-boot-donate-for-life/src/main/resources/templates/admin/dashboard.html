@@ -15,9 +15,12 @@
         <div class="container">
             <div class="profile-container">
                 <h2 class="form-title">Admin Dashboard</h2>
-                <p class="form-description">Manage new and active blood requests.</p>
+                <p class="form-description">Manage new and active blood requests and donations.</p>
 
                 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${param.error}" class="alert alert-danger" th:text="${param.error}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
 
                 <div class="history-section">
                     <h3>Donations Pending Verification</h3>
@@ -25,17 +28,19 @@
                         No new donations are pending verification.
                     </div>
                     <div th:unless="${#lists.isEmpty(unverifiedDonations)}" class="history-list">
-                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
-                            <div>Donation Date</div>
-                            <div>Donor Name</div>
-                            <div>Hospital</div>
-                            <div>Action</div>
+                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa; display: flex; justify-content: space-between;">
+                            <div style="flex-basis: 25%;">Donation Date</div>
+                            <div style="flex-basis: 30%;">Donor Name</div>
+                            <div style="flex-basis: 30%;">Hospital</div>
+                            <div style="flex-basis: 15%; text-align: right;">Action</div>
                         </div>
-                        <div th:each="don : ${unverifiedDonations}" class="history-item">
-                            <div th:text="${#temporals.format(don.donationDate, 'dd-MMM-yyyy')}"></div>
-                            <div th:text="${don.donor.name}"></div>
-                            <div th:text="${don.hospitalName}"></div>
-                            <a th:href="@{/admin/donation/verify/{id}(id=${don.donationId})}" class="cta-button" style="padding: 0.5rem 1rem;">Verify</a>
+                        <div th:each="don : ${unverifiedDonations}" class="history-item" style="display: flex; justify-content: space-between;">
+                            <div style="flex-basis: 25%;" th:text="${#temporals.format(don.donationDate, 'dd-MMM-yyyy')}"></div>
+                            <div style="flex-basis: 30%;" th:text="${don.donor != null ? don.donor.name : 'N/A'}"></div>
+                            <div style="flex-basis: 30%;" th:text="${don.hospitalName}"></div>
+                            <div style="flex-basis: 15%; text-align: right;">
+                                <a th:href="@{/admin/donation/verify/{id}(id=${don.donationId})}" class="cta-button" style="padding: 0.5rem 1rem;">Verify</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -48,17 +53,19 @@
                         No new requests are pending verification.
                     </div>
                     <div th:unless="${#lists.isEmpty(unverifiedRequests)}" class="history-list">
-                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
-                            <div class="history-date">Request Date</div>
-                            <div class="history-details">Acceptor Name</div>
-                            <div class="blood-group">Blood Group</div>
-                            <div>Action</div>
+                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa; display: flex; justify-content: space-between;">
+                            <div style="flex-basis: 25%;">Request Date</div>
+                            <div style="flex-basis: 30%;">Acceptor Name</div>
+                            <div style="flex-basis: 15%;" class="blood-group">Blood Group</div>
+                            <div style="flex-basis: 15%; text-align: right;">Action</div>
                         </div>
-                        <div th:each="req : ${unverifiedRequests}" class="history-item">
-                            <div class="history-date" th:text="${#temporals.format(req.requestDate, 'dd-MMM-yyyy')}"></div>
-                            <div class="history-details" th:text="${req.acceptor.name}"></div>
-                            <div class="blood-group" th:text="${req.requestedBloodGroup}"></div>
-                            <a th:href="@{/admin/request/verify/{id}(id=${req.requestId})}" class="cta-button" style="padding: 0.5rem 1rem;">Verify</a>
+                        <div th:each="req : ${unverifiedRequests}" class="history-item" style="display: flex; justify-content: space-between;">
+                            <div style="flex-basis: 25%;" th:text="${#temporals.format(req.requestDate, 'dd-MMM-yyyy')}"></div>
+                            <div style="flex-basis: 30%;" th:text="${req.acceptor != null ? req.acceptor.name : 'N/A'}"></div>
+                            <div style="flex-basis: 15%;" class="blood-group" th:text="${req.requestedBloodGroup}"></div>
+                            <div style="flex-basis: 15%; text-align: right;">
+                                <a th:href="@{/admin/request/verify/{id}(id=${req.requestId})}" class="cta-button" style="padding: 0.5rem 1rem;">Verify</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -71,17 +78,19 @@
                         There are currently no active requests needing a donor.
                     </div>
                     <div th:unless="${#lists.isEmpty(activeRequests)}" class="history-list">
-                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa;">
-                            <div class="history-date">Request Date</div>
-                            <div class="history-details">Acceptor Name</div>
-                            <div class="blood-group">Blood Group</div>
-                            <div>Action</div>
+                        <div class="history-item" style="font-weight: bold; background-color: #f8f9fa; display: flex; justify-content: space-between;">
+                            <div style="flex-basis: 25%;">Request Date</div>
+                            <div style="flex-basis: 30%;">Acceptor Name</div>
+                            <div style="flex-basis: 15%;" class="blood-group">Blood Group</div>
+                            <div style="flex-basis: 15%; text-align: right;">Action</div>
                         </div>
-                        <div th:each="req : ${activeRequests}" class="history-item">
-                            <div class="history-date" th:text="${#temporals.format(req.requestDate, 'dd-MMM-yyyy')}"></div>
-                            <div class="history-details" th:text="${req.acceptor.name}"></div>
-                            <div class="blood-group" th:text="${req.requestedBloodGroup}"></div>
-                            <a th:href="@{/admin/request/{id}(id=${req.requestId})}" class="cta-button" style="padding: 0.5rem 1rem;">View Details</a>
+                        <div th:each="req : ${activeRequests}" class="history-item" style="display: flex; justify-content: space-between;">
+                            <div style="flex-basis: 25%;" th:text="${#temporals.format(req.requestDate, 'dd-MMM-yyyy')}"></div>
+                            <div style="flex-basis: 30%;" th:text="${req.acceptor != null ? req.acceptor.name : 'N/A'}"></div>
+                            <div style="flex-basis: 15%;" class="blood-group" th:text="${req.requestedBloodGroup}"></div>
+                            <div style="flex-basis: 15%; text-align: right;">
+                                <a th:href="@{/admin/request/{id}(id=${req.requestId})}" class="cta-button" style="padding: 0.5rem 1rem;">View Details</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -91,6 +100,10 @@
 </main>
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script>
+    (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="LvRUuDHappcxl5yRkD9n6";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script>
 
 </body>
 </html>

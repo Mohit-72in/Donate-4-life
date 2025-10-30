@@ -17,13 +17,14 @@
             <div class="profile-container">
 
                 <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
                 <div class="profile-header">
                     <div class="profile-info">
                         <h2 class="profile-name" th:text="${user.name}">User Name</h2>
                         <div class="profile-details">
                             <span class="blood-group" th:text="${user.bloodGroup}">Blood Group</span>
-                            <span class="location" th:text="${user.address}">Address</span>
+                            <span class="location" th:text="${user.address != null ? user.address : 'No address set'}">Address</span>
                         </div>
                     </div>
                     <div style="display: flex; gap: 1rem;">
@@ -74,15 +75,44 @@
                                 <div>Request Date</div>
                                 <div>Blood Group</div>
                                 <div>Location</div>
-                                <div>Status</div>
-                            </div>
+                                <div style="min-width: 200px;">Status</div> </div>
                             <div th:each="request : ${requestHistory}" class="history-item">
                                 <div th:text="${#temporals.format(request.requestDate, 'dd-MMM-yyyy')}"></div>
                                 <div class="blood-group" th:text="${request.requestedBloodGroup}"></div>
                                 <div th:text="${request.hospitalName}"></div>
-                                <div th:text="${request.verificationStatus}"
-                                     th:classappend="${request.verificationStatus.name() == 'APPROVED'} ? 'status-approved' :
-                                                    (${request.verificationStatus.name() == 'REJECTED'} ? 'status-rejected' : 'status-pending')">
+
+                                <div style="min-width: 200px;">
+                                    <div th:if="${request.verificationStatus.name() == 'APPROVED' AND request.status.name() == 'PENDING'}">
+                                        <form th:action="@{/request/fulfill/{id}(id=${request.requestId})}" method="post">
+
+                                            <div style="font-size: 0.9rem; margin-bottom: 5px;">
+                                                <input type="checkbox"
+                                                       th:id="'confirm-' + ${request.requestId}"
+                                                       th:onclick="|document.getElementById('fulfill-btn-${request.requestId}').disabled = !this.checked;|" />
+                                                <label th:for="'confirm-' + ${request.requestId}"> I confirm I received this.</label>
+                                            </div>
+
+                                            <button type="submit"
+                                                    th:id="'fulfill-btn-' + ${request.requestId}"
+                                                    class="cta-button"
+                                                    style="padding: 0.5rem 1rem; font-size: 0.9rem; background-color: #28a745; border-color: #28a745;"
+                                                    disabled>
+                                                Mark as Fulfilled
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <div th:if="${request.status.name() == 'FULFILLED'}" class="status-approved">
+                                        FULFILLED
+                                    </div>
+
+                                    <div th:if="${request.verificationStatus.name() == 'UNVERIFIED'}" class="status-pending">
+                                        PENDING VERIFICATION
+                                    </div>
+
+                                    <div th:if="${request.verificationStatus.name() == 'REJECTED'}" class="status-rejected">
+                                        REJECTED
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -2,14 +2,17 @@ package com.donate4life.demo.controller;
 
 import com.donate4life.demo.entity.Request;
 import com.donate4life.demo.entity.User;
+import com.donate4life.demo.exception.ResourceNotFoundException; // ⭐ ADD THIS IMPORT
 import com.donate4life.demo.service.FileStorageService;
 import com.donate4life.demo.service.RequestService;
-import org.springframework.beans.factory.annotation.Value; // ⭐ IMPORT
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException; // ⭐ ADD THIS IMPORT
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable; // ⭐ ADD THIS IMPORT
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +24,6 @@ public class RequestController {
     private final RequestService requestService;
     private final FileStorageService fileStorageService;
 
-    // ⭐ ADD THIS
     @Value("${google.maps.api.key}")
     private String googleMapsApiKey;
 
@@ -33,7 +35,7 @@ public class RequestController {
     @GetMapping("/request")
     public String showRequestForm(Model model) {
         model.addAttribute("request", new Request());
-        model.addAttribute("googleMapsApiKey", googleMapsApiKey); // ⭐ ADD THIS LINE
+        model.addAttribute("googleMapsApiKey", googleMapsApiKey);
         return "request";
     }
 
@@ -65,6 +67,39 @@ public class RequestController {
         );
 
         redirectAttributes.addFlashAttribute("success", "Your request has been submitted for verification!");
+        return "redirect:/profile";
+    }
+
+    // ⭐ --- ADD THIS NEW METHOD --- ⭐
+    /**
+     * Allows an ACCEPTOR to mark their own request as fulfilled.
+     */
+    @PostMapping("/request/fulfill/{requestId}")
+    public String fulfillRequestByUser(@PathVariable Integer requestId,
+                                       @AuthenticationPrincipal User currentUser,
+                                       RedirectAttributes redirectAttributes) {
+
+        Request request;
+        try {
+            request = requestService.getRequestById(requestId);
+        } catch (ResourceNotFoundException e) {
+            throw new AccessDeniedException("Request not found.");
+        }
+
+        // SECURITY CHECK: Make sure the logged-in user owns this request
+        if (!request.getAcceptor().getUserId().equals(currentUser.getUserId())) {
+            throw new AccessDeniedException("You are not authorized to modify this request.");
+        }
+
+        try {
+            requestService.fulfillRequest(requestId);
+            redirectAttributes.addFlashAttribute("success", "Your request has been marked as fulfilled!");
+        } catch (Exception e) {
+            System.err.println("Error fulfilling request " + requestId + ": " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error updating your request.");
+        }
+
+        // Redirect back to the user's profile
         return "redirect:/profile";
     }
 }

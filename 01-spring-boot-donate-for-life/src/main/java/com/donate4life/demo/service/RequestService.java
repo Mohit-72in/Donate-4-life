@@ -20,17 +20,14 @@ public class RequestService {
     }
 
     public Request createRequest(Integer acceptorId, String bloodGroup, String hospitalName, String documentUrl,
-                                 Double latitude, Double longitude) { // ⭐ ADD PARAMETERS
+                                 Double latitude, Double longitude) { // Includes Lat/Lng
         User acceptor = userRepository.findById(acceptorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Acceptor not found with ID: " + acceptorId));
 
         Request request = new Request(acceptor, bloodGroup, hospitalName);
         request.setDocumentUrl(documentUrl);
-
-        // ⭐ ADD THESE TWO LINES
         request.setLatitude(latitude);
         request.setLongitude(longitude);
-
         return requestRepository.save(request);
     }
 
@@ -60,9 +57,25 @@ public class RequestService {
         requestRepository.save(request);
     }
 
-    // ⭐ THIS WAS THE MISSING METHOD
-    // This method is needed for the profile history page
     public List<Request> getRequestsByAcceptor(Integer acceptorId) {
         return requestRepository.findByAcceptor_UserId(acceptorId);
+    }
+
+    // ⭐ --- ADD THIS NEW METHOD --- ⭐
+    /**
+     * Marks a request as FULFILLED.
+     * This will remove it from the admin's "Active Requests" list.
+     * @param requestId The ID of the request to fulfill.
+     */
+    public void fulfillRequest(Integer requestId) {
+        // FindById is fine here, but getRequestById is safer if it fetches relationships
+        Request request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found with ID: " + requestId));
+
+        // Set the status to FULFILLED
+        request.setStatus(Request.Status.FULFILLED);
+
+        // Save the change to the database
+        requestRepository.save(request);
     }
 }

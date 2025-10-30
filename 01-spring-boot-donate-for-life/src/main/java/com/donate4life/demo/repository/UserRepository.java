@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     // This is the required method. Note the "In" at the end.
     List<User> findByUserTypeAndBloodGroupIn(User.UserType userType, List<String> bloodGroups);
 
+    // ⭐ ADD THIS METHOD ⭐
+    // This finds only donors who have verified their OTP (enabled = true)
+    List<User> findByUserTypeAndBloodGroupInAndEnabled(User.UserType userType, List<String> bloodGroups, boolean enabled);
 }
